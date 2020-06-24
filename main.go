@@ -12,11 +12,8 @@ import (
 
 type HandlerConfig struct {
 	sensu.PluginConfig
-	dsn      string
-	user     string
-	password string
-	schema   string
-	table    string
+	dsn   string
+	table string
 }
 
 var (
@@ -43,7 +40,7 @@ var (
 			Argument:  "table",
 			Shorthand: "t",
 			Usage:     "The clickhouse table",
-			Value:     &config.dsn,
+			Value:     &config.table,
 		},
 	}
 )
@@ -74,13 +71,13 @@ func checkArgs(_ *corev2.Event) error {
 }
 
 func sendMessage(event *corev2.Event) error {
-	connect, err := sql.Open("clickhouse", config.dsn)
+	conn, err := sql.Open("clickhouse", config.dsn)
 	if err != nil {
 		return err
 	}
 
 	var (
-		tx, _   = connect.Begin()
+		tx, _   = conn.Begin()
 		stmt, _ = tx.Prepare(fmt.Sprintf("INSERT INTO %s (ts, metric, value, tags) VALUES (?, ?, ?, ?)", config.table))
 	)
 
