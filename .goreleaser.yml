@@ -1,20 +1,15 @@
+---
+project_name: sensu-clickhouse-handler
 builds:
-- env:
-  - CGO_ENABLED=0
-archives:
-- replacements:
-    darwin: Darwin
-    linux: Linux
-    windows: Windows
-    386: i386
-    amd64: x86_64
-checksum:
-  name_template: 'checksums.txt'
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+    binary: bin/sensu-clickhouse-handler
 snapshot:
   name_template: "{{ .Tag }}"
-changelog:
-  sort: asc
-  filters:
-    exclude:
-    - '^docs:'
-    - '^test:'
+checksum:
+  name_template: 'checksums.txt'
